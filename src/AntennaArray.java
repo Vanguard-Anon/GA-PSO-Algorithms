@@ -37,22 +37,32 @@ public class AntennaArray {
      *      n_antennae/2.
      */
     public boolean is_valid(double[] design) {
-        if(design.length != n_antennae) return false;
+        if(design.length != n_antennae) {
+        	System.out.println("D");
+        	return false;
+        }
         double[] des = new double[design.length];
         System.arraycopy(design,0,des,0,design.length);
         Arrays.sort(des);
 
         //Aperture size is exactly n_antennae/2
-        if(Math.abs(des[des.length - 1] - ((double)n_antennae) / 2.0)>1e-10)
+        if(Math.abs(des[des.length - 1] - ((double)n_antennae) / 2.0)>1e-10) {
+        	System.out.println("A");
             return false;
+        }
         //All antennae lie within the problem bounds
         for(int i = 0;i<des.length-1;++i)
-            if(des[i] < bounds()[i][0] || des[i] > bounds()[i][1] )
+            if(des[i] < bounds()[i][0] || des[i] > bounds()[i][1] ) {
+            	System.out.println("B");
                 return false;
+            }
         //All antennae are separated by at least MIN_SPACING
         for(int i = 0;i<des.length-1;++i)
-            if(des[i+1] - des[i] < MIN_SPACING)
+            if(des[i+1] - des[i] < MIN_SPACING) {
+            	System.out.println("C");
                 return false;
+
+            }
         return true;
     }
     /**
