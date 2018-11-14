@@ -1,3 +1,4 @@
+package antenna;
 import java.util.*;
 
 /** Antenna array design problem */
@@ -38,7 +39,6 @@ public class AntennaArray {
      */
     public boolean is_valid(double[] design) {
         if(design.length != n_antennae) {
-        	System.out.println("D");
         	return false;
         }
         double[] des = new double[design.length];
@@ -47,19 +47,16 @@ public class AntennaArray {
 
         //Aperture size is exactly n_antennae/2
         if(Math.abs(des[des.length - 1] - ((double)n_antennae) / 2.0)>1e-10) {
-        	System.out.println("A");
             return false;
         }
         //All antennae lie within the problem bounds
         for(int i = 0;i<des.length-1;++i)
             if(des[i] < bounds()[i][0] || des[i] > bounds()[i][1] ) {
-            	System.out.println("B");
                 return false;
             }
         //All antennae are separated by at least MIN_SPACING
         for(int i = 0;i<des.length-1;++i)
             if(des[i+1] - des[i] < MIN_SPACING) {
-            	System.out.println("C");
                 return false;
 
             }
