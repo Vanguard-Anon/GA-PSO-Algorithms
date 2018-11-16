@@ -9,28 +9,12 @@ public class Particle {
 	private double[] velocity;
 	private double[] perosnal_best_pos;
 
-
-	public Particle(double[] position) {
-
-		Random rand = new Random();
+	public Particle(double[] position, double[] velocity) {
 
 		this.position = position;
 		this.perosnal_best_pos = this.position;
-		this.velocity = initVelocity();
-//				rand.nextDouble() * (global_best_pos - 0) + 0;
-
+		this.velocity = velocity;
 	}
-	
-	
-	
-	public double[] initVelocity() {
-		
-		
-		
-		return 0;
-	}
-		
-	
 
 	public double[] getPosition() {
 		return position;
@@ -40,22 +24,20 @@ public class Particle {
 		return velocity;
 	}
 
-	public double[] getBestPosition() {
+	public double[] getPersonalBestPosition() {
 		return perosnal_best_pos;
 	}
 	
-	public void setBestPosition(double[] new_position) {
+	public void setPersonalBestPosition(double[] new_position) {
 		this.perosnal_best_pos = new_position;
 	}
 
-	public void updateVelocity(Swarm swarm) {
+	public void updateVelocity(double[] global_best) {
 		
 		Random rand = new Random();
-		
-		for(Particle p : swarm.getParticles()) {
-			
+	
+		for(int i = 0; i<global_best.length ; i++) {
 			double inertia = 0.6;
-
 			//cognative strength coefficient can be negative
 			double phi1 = 0.2;
 			//random vector, avoids deterministic alg that will get stuck, explore more of the problem space
@@ -66,30 +48,24 @@ public class Particle {
 			double phi2 = 0.6;
 			double r2 = Math.random();
 			
-			
 			//															cognative attraction, attraction to pbest                    social attraction of particles to best pos 
-			this.velocity = inertia * this.getVelocity() + (phi1 * r1 * this.getBestPosition() - this.getPosition()) + (phi2 * r2 * swarm.getGlobalBest() + this.getPosition());
-			
-			
-		}
-
+			double velocity = inertia * this.getVelocity()[i] + (phi1 * r1 * this.getPersonalBestPosition()[i] - this.getPosition()[i]) + (phi2 * r2 * global_best[i] + this.getPosition()[i]);
 		
-
-
+			this.velocity[i] = velocity;
+		}
 	}
 
 	public void updatePosition() {
-
 		
-		this.position = this.getPosition() + this.getVelocity();
-
+		for(int i = 0; i<this.getPosition().length ; i++) {
+			double position = this.getPosition()[i] + this.getVelocity()[i];
+			this.position[i] = position;
+		}
 	}
 
 	@Override
 	public String toString() {
-
 		return "Particle [velocity = " + velocity + ", position = " + position + ", personal best position = " + perosnal_best_pos  + "]";
 	}
-
 
 }
