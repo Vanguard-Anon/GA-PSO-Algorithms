@@ -1,36 +1,80 @@
 package antenna;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
 public class Swarm {
-
 	
+	private double[] global_best_pos;
+	private double[] particles;
+	private AntennaArray antenna_array;
 	
-	private double global_best_pos;
-	private ArrayList<Particle> particles;
-	
-	
-	public Swarm(double global_best_pos, double[] antenna_instance) {
+	public Swarm(AntennaArray antenna_array, int n_antenna) {
+		
+		this.antenna_array = antenna_array;
 		
 		
-		particles = new ArrayList<Particle>();
+		particles = new double[n_antenna];
 		
-		for(double pos : antenna_instance) {
-			Particle particle = new Particle(pos, global_best_pos);
-			particles.add(particle);	
+		for(int i = 0; i<n_antenna; i++) {
+			double[] design = initialiseValidDesign(n_antenna);
+			Particle p = new Particle(design);
+						
 		}
 		
 		
+//		for(double pos : antenna_instance) {
+//			Particle particle = new Particle(pos, global_best_pos);
+//			particles.add(particle);	
+//		}
+		
+		
+	}
+	
+public double[] initialiseValidDesign(int n_antenna) {
+		
+		this.position = new double[n_antenna];
+    	
+    			
+    	double apeture_size = n_antenna/2;
+		
+		while(!antenna.is_valid(antennae_array)) {
+			
+			for(int i=0; i<antennae_array.length-1; i++) {
+				
+				double randomValue = 0 + (apeture_size - 0) * rand.nextDouble();
+
+				antennae_array[i] = randomValue;
+				
+			}
+			
+			antennae_array[antennae_array.length-1] = apeture_size;
+	        Arrays.sort(antennae_array); 
+
+			if(!antenna.is_valid(antennae_array)) {
+
+				antennae_array = new double[(int) array_size];
+
+			}
+		}
+	
+		return antennae_array;
 	}
 	
 	
-	public ArrayList<Particle> getParticles(){
+	
+	
+	
+	
+	
+	
+	public double[] getParticles(){
 		return particles;
 	}
 	
-	public double getGlobalBest(){
+	public double[] getGlobalBest(){
 		return this.global_best_pos;
 	}
 	

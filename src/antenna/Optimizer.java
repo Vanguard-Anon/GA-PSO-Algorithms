@@ -20,43 +20,13 @@ public class Optimizer {
 		int n_antenna = 3;
 		this.antenna = new AntennaArray(n_antenna, 90.0);
 		
-		double[] antenna_array = this.initialiseValidDesign(n_antenna);
-		
-		this.swarm = new Swarm(0.5, antenna_array);
+		this.swarm = new Swarm(this.antenna, n_antenna);
 		
 		this.best_result = this.antenna.evaluate(swarm.getPositions());
 	}
 	
 	
-	public double[] initialiseValidDesign(double array_size) {
-		
-		antennae_array = new double[(int) array_size];
-    	
-    			
-    	double apeture_size = array_size/2;
-		
-		while(!antenna.is_valid(antennae_array)) {
-			
-			for(int i=0; i<antennae_array.length-1; i++) {
-				
-				double randomValue = 0 + (apeture_size - 0) * rand.nextDouble();
-
-				antennae_array[i] = randomValue;
-				
-			}
-			
-			antennae_array[antennae_array.length-1] = apeture_size;
-	        Arrays.sort(antennae_array); 
-
-			if(!antenna.is_valid(antennae_array)) {
-
-				antennae_array = new double[(int) array_size];
-
-			}
-		}
 	
-		return antennae_array;
-	}
 	
 	
 	public void search(int duration) {
@@ -112,8 +82,6 @@ public class Optimizer {
 	public static void main(String[] args) {
 
 		rand = new Random();
-
-		
 		
 		Optimizer op = new Optimizer();
 	
