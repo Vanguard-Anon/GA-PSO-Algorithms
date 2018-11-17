@@ -12,12 +12,10 @@ public class Optimizer {
 	private static Random rand;
 	private AntennaArray antenna;
 	private Swarm swarm;
-	private double[] best_result;
-
 	
-	public Optimizer(int n_particle, int n_antenna) {
+	public Optimizer(int n_particle, int n_antenna, double antenna_angle) {
 				
-		this.antenna = new AntennaArray(n_antenna, 90.0);
+		this.antenna = new AntennaArray(n_antenna, antenna_angle);
 		this.swarm = new Swarm(this.antenna, n_particle, n_antenna);
 	}	
 	
@@ -35,13 +33,18 @@ public class Optimizer {
 	
 	public static void main(String[] args) {
 		
-		Optimizer op = new Optimizer(15, 3);
+		Optimizer op = new Optimizer(1, 3, 80.0);
 		
 		Swarm swarm = op.getSwarm();
 		
-		swarm.search(10);
-
-				
+		swarm.search(50);
+		
+		double[] result = swarm.getGlobalBest();
+		
+		System.out.print("final global best = ");
+		for(int i = 0; i<result.length ; i++) {
+			System.out.print(result[i] + ", ");
+		}
 		System.out.println(swarm.toString());
 		
 	}

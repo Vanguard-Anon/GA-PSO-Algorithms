@@ -4,26 +4,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+
 public class Swarm {
 	
 	private double[] global_best_pos;
 	private ArrayList<Particle> particles;
 	private AntennaArray antenna_array;
+	private int n_antenna;
+	private int n_particle;
+
 	
 	public Swarm(AntennaArray antenna_array, int n_particle, int n_antenna) {
 		
 		this.antenna_array = antenna_array;
-//		particles = new double[n_particle];
+		this.n_antenna = n_antenna;
+		this.n_particle = n_particle;
+
 		particles = new ArrayList<Particle>(n_particle);
 		
 		for(int i = 0; i<n_particle; i++) {
 			double[] design = initialiseValidDesign(n_antenna);
-			double[] velocity = initialiseVelocity();
-			Particle p = new Particle(design, velocity);
+			double[] velocity = initialiseVelocity(n_antenna);
+			Particle p = new Particle(antenna_array, design, velocity);
 			particles.add(p);			
 		}
 		
-		this.global_best_pos = this.initialiseGlobalBestPosition();
+		this.global_best_pos = this.initialiseGlobalBestPosition(this.getParticles());
+		
+		System.out.print("Initial global best position = ");
+		for(int i = 0; i<this.global_best_pos.length ; i++) {
+			System.out.print(this.global_best_pos[i] + ", ");
+		}
+		System.out.println("Initial gbest Minimum SSL = " + this.getArray().evaluate(this.global_best_pos));
 	}
 	
 	public double[] initialiseValidDesign(int n_antenna) {
@@ -56,14 +68,41 @@ public class Swarm {
 	}
 	
 	
-	public double[] initialiseVelocity() {
-		double[] velocity = new double[]{0.0,0.0,0.0};
+	public double[] initialiseVelocity(int n_antenna) {
+		
+		Random rand = new Random();
+		
+		double[] velocity = new double[n_antenna];
+		
+		for(int i = 0; i<velocity.length; i++) {
+			double randomVelocity = 0 + (n_antenna/2 - 0) * rand.nextDouble();
+			velocity[i] = randomVelocity;	
+		}
 		return velocity;		
 	}
 	
-	public double[] initialiseGlobalBestPosition() {
-		double[] velocity = new double[]{0.0,0.0,0.0};
-		return velocity;		
+	public double[] initialiseGlobalBestPosition(ArrayList<Particle> particles) {
+		
+		double[] gbest = new double[this.getNAntenna()];
+		AntennaArray antenna_array = this.getArray();
+		
+		for(Particle p : particles) {
+			
+			//if gbest is not set, set particle position as gbest
+			if(gbest == null) {
+				gbest = p.getPosition();
+			}
+			
+			//calc fitness of particle position
+			double result = antenna_array.evaluate(p.getPosition());
+			
+			//if particle position fitness is better than the gbest position fitness, set particle position as new gbest
+			if(result < antenna_array.evaluate(gbest)) {
+				gbest = p.getPosition();
+			}
+		}
+		
+		return gbest;		
 	}
 	
 	public ArrayList<Particle> getParticles(){
@@ -74,23 +113,28 @@ public class Swarm {
 		return this.global_best_pos;
 	}
 	
+	public void setGlobalBest(double[] design){
+		this.global_best_pos = design;
+	}
+	
 	public AntennaArray getArray() {
     	return this.antenna_array;
     }
 	
+	public int getNAntenna() {
+		return this.n_antenna;
+	}
+	
 	
 	public void search(int duration) {
 		
-		long start= System.currentTimeMillis();
-    	long end = start+(duration*1000);
-    	
     	AntennaArray antenna_arr = this.getArray();
     	
-    	while(System.currentTimeMillis() < end) {
-    		   		
+    	for(int iter = 1; iter<=duration ; iter++) {
+
     		for(Particle p : this.getParticles()) {
     			
-    			p.updateVelocity(this.getGlobalBest());
+    			p.updateVelocity(this.getGlobalBest(), this.n_particle, iter, duration);
     			p.updatePosition();
     			
     			//evaluate particle p position using antenna array
@@ -104,44 +148,27 @@ public class Swarm {
     			
     			//evaluate global best position of all particles
     			double gbest_result = antenna_arr.evaluate(this.getGlobalBest());
-    			//if new position is better than the global best, set new position as the global best
-    			if(result < gbest_result) {
-    				p.setPersonalBestPosition(p.getPosition());
+    			//if pbest position is better than the global best, set pbest position as the global best of the swarm
+    			if(pbest_result < gbest_result) {
+    				this.setGlobalBest(p.getPersonalBestPosition());
+    				
+    				System.out.print("has new position updated = ");
+        			for(int i = 0; i<p.getPosition().length ; i++) {
+        				System.out.print(p.getPersonalBestPosition()[i] + ", ");
+        			}
+        			System.out.println("updated? position Minimum SSL = " + this.antenna_array.evaluate(p.getPersonalBestPosition()));
     			}
+    			
+    		
+    			
+    			
     		}	
     	}
 	}
 	
-//	public double[] getPositions() {
-//		double[] positions = new double[this.getParticles().size()];
-//		int i = 0;
-//		for(Particle p: this.getParticles()) {
-//			positions[i] = p.getBestPosition();
-//			i++;
-//		}
-//		return positions;
-//	}
-	
-	
-	
-	
-	
-		
-		
-		
-//			REPEAT UNTIL ( termination condition IS satisfied ) DO
-//				UPDATE global best;
-//				FOR EACH ( particle in population ) DO
-//					1. UPDATE velocity and position;
-//					2. EVALUATE new position;
-//					3. UPDATE personal best;
-//				OD
-//			OD
-		
-	
 	@Override
 	public String toString() {
-		return "Global Best = " + this.global_best_pos + "\n" + "Minimum SSL = " + this.getArray().evaluate(this.global_best_pos);
+		return "Minimum SSL = " + this.getArray().evaluate(this.global_best_pos);
 	}
 		
 		
