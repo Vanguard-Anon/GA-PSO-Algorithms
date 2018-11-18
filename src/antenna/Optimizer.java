@@ -33,15 +33,15 @@ public class Optimizer {
 	
 	public static void main(String[] args) {
 		
-		Optimizer op = new Optimizer(1, 3, 80.0);
+		Optimizer op = new Optimizer(22, 5, 90.0);
 		
 		Swarm swarm = op.getSwarm();
 		
-		swarm.search(50);
+		swarm.search(30);
 		
 		double[] result = swarm.getGlobalBest();
 		
-		System.out.print("final global best = ");
+		System.out.print("Final global best = ");
 		for(int i = 0; i<result.length ; i++) {
 			System.out.print(result[i] + ", ");
 		}
