@@ -33,7 +33,7 @@ public class Optimizer {
 	
 	public static void main(String[] args) {
 		
-		Optimizer op = new Optimizer(22, 5, 90.0);
+		Optimizer op = new Optimizer(50, 5, 35.0);
 		
 		Swarm swarm = op.getSwarm();
 		
