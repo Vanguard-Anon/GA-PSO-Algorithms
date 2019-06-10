@@ -1,1 +1,12 @@
 /bin/
+
+
+# intellij specific git ignore
+cs3910-computational-intelligence.iml
+.idea
+
+
+# eclipse specific git ignore
+.classpath
+.project
+.metadata
