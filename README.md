@@ -40,17 +40,16 @@ swarm/population size = 50
 items = 20 (if running random instance otherwise coursework instance default is 20)
 
 #### GA:
-mutation rate = 0.2
-crossover rate = 0.8
-tournement selection: routletter wheel (can change to tournement)
+- mutation rate = 0.2
+- crossover rate = 0.8
+- tournement selection: routletter wheel (can change to tournement)
 
 #### PSO:
-phi1 = phi2 = 0.5 + ln2
-inertia = chaotic:
-
-z = Math.random();
-z = (4.0 * z) * (1-z);
-inertia = (initial_inertia - final_inertia) * (max_iteration - iteration) / max_iteration + (final_inertia * z);
+- phi1 = phi2 = 0.5 + ln2
+- inertia = chaotic:
+  - z = Math.random();
+  - z = (4.0 * z) * (1-z);
+  - inertia = (initial_inertia - final_inertia) * (max_iteration - iteration) / max_iteration + (final_inertia * z);
 
 initial inertia = 0.9
 final inertia = 0.4
